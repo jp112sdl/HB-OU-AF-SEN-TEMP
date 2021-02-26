@@ -5,7 +5,7 @@ _benötigt [JP-HB-Devices Addon Version 4.2 oder höher](https://github.com/jp11
 <br/>
 😤 Ich war es leid, zum Regulieren der Luftzufuhr des Kamins jedes Mal aufstehen zu müssen.<br/>
 💡 Eine Automatisierung musste her!<br/><br/>
-Wie gut, dass ich erst kürzlich einen defekten 3D Drucker zerlegt hatte, der als idealer Ersatzteilspender diente.<br/>
+Wie gut, dass ich erst kürzlich einen defekten 3D Drucker zerlegt hatte, der als idealer Teilespender diente.<br/>
 So hatte ich einen NEMA17 Stepper Motor, Linearführung, Umlenkrolle etc. sofort zur Verfügung.<br/>
 Der zerlegte Extruder passte auch mit leichten Anpassungen wunderbar unter den "Luftklappen-Nupsi" 😂 der Kamintür.<br/>
 <br/>
@@ -47,3 +47,6 @@ Leider habe ich keine Möglichkeit gefunden, zuverlässig die absolute Position 
 Es ist daher notwendig, bei jeder Remote-Ansteuerung zunächst den linken End-Stopp (Nullpunkt) und dann erst die Zielposition anzufahren.
 <br/>
 <br/>
+Zusätzlich ist noch ein MAX6675 Temperatursensor verbaut, der die Temperatur im Abgasrohr misst.
+Mithilfe eines kleines Skriptes lasse ich mich über Pushover benachrichtigen, wenn es Zeit wird, Holz nachzulegen.
+
