@@ -2,6 +2,8 @@
 
 Homematic AirFlap Control with Temperature Sensor
 
+Kamin-Luftklappensteuerung mit Temperatursensor (MAX6675) im Rauchrohr
+
 ![B1](Images/IMG_2078.jpeg)
 ![B2](Images/IMG_2079.jpeg)
 
