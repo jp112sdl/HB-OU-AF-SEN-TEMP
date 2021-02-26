@@ -1,9 +1,7 @@
-/*
- * LCDDisplay.h
- *
- *  Created on: 23 Feb 2021
- *      Author: jp112sdl
- */
+//- -----------------------------------------------------------------------------------------------------------------------
+// 2016-10-31 papa Creative Commons - http://creativecommons.org/licenses/by-nc-sa/3.0/de/
+// 2021-02-26 jp112sdl Creative Commons - http://creativecommons.org/licenses/by-nc-sa/3.0/de/
+//- -----------------------------------------------------------------------------------------------------------------------
 
 #ifndef LCDDISPLAY_H_
 #define LCDDISPLAY_H_
