@@ -32,8 +32,18 @@ Im Detail habe ich verwendet:<br/>
 Verbaut am Kamin:
 ![B3](Images/IMG_2085.jpeg)
 
-
+<br/><br/>
+Bei der ersten Inbetriebnahme erfolgt eine automatische Kalibierung.<br/>
+Es wird die Anzahl der Schritte zwischen beiden End-Stopps ermittelt und abgespeichert.<br/>
+Somit kann dann präzise eine Position (in % der Strecke) angefahren werden.<br/>
+<br/><br/>
 Steuerung über Homematic:
 ![vid](Images/IMG_2086.gif)
 Higher Quality Video: [click here](https://github.com/jp112sdl/HB-OU-AF-SEN-TEMP/raw/master/Images/IMG_2086.mov)
-  
+<br/>
+<br/>
+Nach dem Anfahren der Position wird der Stepper Motor freigegeben, so dass jederzeit ein manuelles Verschieben möglich ist.<br/>
+Leider habe ich keine Möglichkeit gefunden, zuverlässig die absolute Position des Schlittens zu bestimmen.<br/>
+Es ist daher notwendig, bei jeder Remote-Ansteuerung zunächst den linken End-Stopp (Nullpunkt) und dann erst die Zielposition anzufahren.
+<br/>
+<br/>
