@@ -150,15 +150,14 @@ public:
 template<class HalType,class DimmerType,class PWM>
 class StepperControl : public DimmerControl<HalType,DimmerType,PWM>, public Alarm {
   UserStorage     ustore;
+  Nema17  nema17;
 private:
   uint8_t lastphys;
-  bool    first;
-  bool    disableAfterMove;
-  Nema17  nema17;
+  bool    first,disableAfterMove,gotNewMessage;
 
 public:
   typedef DimmerControl<HalType,DimmerType,PWM> BaseControl;
-  StepperControl (DimmerType& dim) : BaseControl(dim), Alarm(0),ustore(0), lastphys(0), first(true), disableAfterMove(true) { }
+  StepperControl (DimmerType& dim) : BaseControl(dim), Alarm(0),ustore(0), lastphys(0), first(true), disableAfterMove(true), gotNewMessage(false) { }
 
   virtual ~StepperControl () {}
 
@@ -172,6 +171,10 @@ public:
 
   void setUserStorage(const UserStorage& storage) {
     ustore = storage;
+  }
+
+  void setNewMessage(bool b) {
+    gotNewMessage = b;
   }
 
   void initNEMA17() {
@@ -237,7 +240,8 @@ public:
     DimmerList1 l1 = BaseControl::dimmer.dimmerChannel(1).getList1();
     disableAfterMove = l0.releaseAfterMove();
 
-    if (lastphys != phys ) {
+    if (lastphys != phys || gotNewMessage) {
+      gotNewMessage = false;
       lcdDisplay.enableBacklight(LCDDisplay::BLUE);
       sysclock.cancel(*this);
       Alarm::set(decis2ticks(l1.statusInfoMinDly()*5) + millis2ticks(500));
@@ -251,7 +255,53 @@ public:
   }
 };
 
-typedef DimmerChannel<Hal, PEERS_PER_CHANNEL,AFTList0> StepperChannelType;
+
+class StepperChannelType : public ActorChannel<Hal,DimmerList1,DimmerList3,PEERS_PER_CHANNEL,AFTList0,DimmerStateMachine> {
+  uint8_t* phys;
+protected:
+  typedef ActorChannel<Hal,DimmerList1,DimmerList3,PEERS_PER_CHANNEL,AFTList0,DimmerStateMachine> BaseChannel;
+private:
+  bool gotNewMessage;
+public:
+  StepperChannelType () : BaseChannel(), phys(0), gotNewMessage(false) {}
+
+  bool process (const ActionSetMsg& msg) {
+    gotNewMessage = true;
+    BaseChannel::set(msg.value(), msg.ramp(), msg.delay());
+    return true;
+  }
+
+  bool process (const ActionCommandMsg& msg) {
+    gotNewMessage = true;
+    BaseChannel::process(msg);
+    return true;
+  }
+
+  bool process (const RemoteEventMsg& msg) {
+    gotNewMessage = true;
+    BaseChannel::process(msg);
+    return true;
+  }
+
+  void setPhysical(uint8_t& p) {
+    phys = &p;
+  }
+
+  void patchStatus (Message& msg) {
+    if( msg.length() == 0x0e ) {
+      msg.length(0x0f);
+      if( phys != 0 ) {
+        msg.data()[3] = *phys;
+      }
+    }
+  }
+
+  bool checkNewMessage() {
+    bool m = gotNewMessage;
+    gotNewMessage = false;
+    return m;
+  }
+};
 
 class StepperWeatherDevice : public ChannelDevice<Hal, VirtBaseChannel<Hal, AFTList0>, 2, AFTList0> {
 public:
@@ -276,7 +326,6 @@ ConfigButton<StepperWeatherDevice> cfgBtn(sdev);
 StepperControl<Hal,StepperWeatherDevice,NoPWM> stepperControl(sdev);
 
 void setup(void) {
-
   DINIT(57600, ASKSIN_PLUS_PLUS_IDENTIFIER);
 
   stepperControl.init(hal,0);
@@ -300,6 +349,9 @@ void setup(void) {
 
 void loop(void) {
   if (stepperControl.run() == false) {
+    if (sdev.dimmerChannel(1).checkNewMessage() == true) {
+      stepperControl.setNewMessage(true);
+    }
     hal.runready();
     sdev.pollRadio();
   }
