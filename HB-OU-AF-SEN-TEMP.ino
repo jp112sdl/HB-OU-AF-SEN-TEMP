@@ -40,7 +40,8 @@
 #define MAX6675_CS        43 // Pin 50
 #define MAX6675_SCK       44 // Pin 51
 
-#define PEERS_PER_CHANNEL    6
+#define PEERS_PER_CHANNEL                20
+#define PEERS_PER_WT_CHANNEL             4
 #define TEMPERATURE_MSG_INTERVAL         180
 
 #include <U8g2lib.h>
@@ -100,7 +101,7 @@ class WeatherEventMsg : public Message {
     }
 };
 
-class WeatherChannelType : public Channel<Hal, List1, EmptyList, List4, PEERS_PER_CHANNEL, AFTList0>, public Alarm {
+class WeatherChannelType : public Channel<Hal, List1, EmptyList, List4, PEERS_PER_WT_CHANNEL, AFTList0>, public Alarm {
     WeatherEventMsg     msg;
     bool                sensOK;
     uint16_t            millis;
